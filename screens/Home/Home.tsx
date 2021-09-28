@@ -3,33 +3,12 @@ import { Image, FlatList, TouchableOpacity } from "react-native";
 import AppLoading from "expo-app-loading";
 import styles from "./HomeStyles";
 import axios from "axios";
+import {RenderItem, RenderImage} from '../../types'
 import { Text, View } from "../../components/Themed";
 import { RootTabScreenProps } from "../../types";
 import { ScrollView } from "react-native-gesture-handler";
 
-type RenderItem = {
-  item: {
-    id: string;
-    image_id: string;
-    item_data: {
-      name: string;
-      variations: [
-        {
-          item_variation_data: {
-            price_money: number;
-          };
-        }
-      ];
-    };
-  };
-};
-type RenderImage = {
-  id: string;
-  image_id: string;
-  item: {
-    image_id: string;
-  };
-};
+
 
 export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
   const renderItem = ({ item }: RenderItem): React.ReactElement => {
@@ -41,8 +20,12 @@ export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
       item.item_data.variations[0].item_variation_data.price_money;
     return (
       <View style={styles.item} key={item.id}>
-        <TouchableOpacity>
-        
+        <TouchableOpacity
+          onPress={():void => {
+           
+            navigation.navigate('ItemScreen', {itemInformation: {item}, image: url.image_data.url})
+          }}
+        >
           <Image
             source={{ uri: url.image_data.url }}
             style={styles.itemPhoto}
@@ -99,6 +82,58 @@ export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
       <View style={styles.new}>
         <View style={styles.newTop}>
           <Text style={styles.title}>Whats New</Text>
+          <Text style={styles.title}>See All</Text>
+        </View>
+
+        {images.length <= 1 || items.length <= 1 ? (
+          <AppLoading />
+        ) : (
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            horizontal
+          />
+        )}
+      </View>
+      <View style={styles.new}>
+        <View style={styles.newTop}>
+          <Text style={styles.title}>Beer</Text>
+          <Text style={styles.title}>See All</Text>
+        </View>
+
+        {images.length <= 1 || items.length <= 1 ? (
+          <AppLoading />
+        ) : (
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            horizontal
+          />
+        )}
+      </View>
+      <View style={styles.new}>
+        <View style={styles.newTop}>
+          <Text style={styles.title}>Wine</Text>
+          <Text style={styles.title}>See All</Text>
+        </View>
+
+        {images.length <= 1 || items.length <= 1 ? (
+          <AppLoading />
+        ) : (
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            horizontal
+          />
+        )}
+      </View>
+
+      <View style={styles.new}>
+        <View style={styles.newTop}>
+          <Text style={styles.title}>Spirts</Text>
           <Text style={styles.title}>See All</Text>
         </View>
 

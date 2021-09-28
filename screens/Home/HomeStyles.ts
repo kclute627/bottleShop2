@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   new: {
-    marginVertical: 45,
+    marginTop: 15,
     marginHorizontal: 10,
     backgroundColor: "#fff",
     width: "95%",
