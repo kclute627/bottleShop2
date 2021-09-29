@@ -5,6 +5,12 @@ image: {
     height: 275,
     width: '100%'
 },
+top:{
+
+},
+middle: {
+
+},
 container:{
     flex: 1
 }

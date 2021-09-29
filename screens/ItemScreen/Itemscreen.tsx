@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import { styles } from "./ItemScreen-styles";
 import AppLoading from "expo-app-loading";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, ActivityIndicator } from "react-native";
 
 export default function Itemscreen({ route }: any): ReactElement {
   const [loading, setLoading] = useState(false);
@@ -10,18 +10,22 @@ export default function Itemscreen({ route }: any): ReactElement {
   const { itemInformation, image } = route.params;
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: image }}
-        style={styles.image}
-        onLoad={() => setLoading(true)}
-      />
-      {loading ? (
-        <>
-          <Text> textInComponent </Text>
-        </>
-      ) : (
-        <AppLoading />
-      )}
+      <View style={styles.top}>
+        <Image
+          source={{ uri: image }}
+          style={styles.image}
+          onLoad={() => setLoading(true)}
+        />
+      </View>
+      <View style={styles.middle}>
+        {loading ? (
+          <>
+            <Text> textInComponent </Text>
+          </>
+        ) : (
+          <ActivityIndicator size='large'/>
+        )}
+      </View>
     </View>
   );
 }
