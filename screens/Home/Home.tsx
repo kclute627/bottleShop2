@@ -1,53 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { Image, FlatList, TouchableOpacity } from "react-native";
-import AppLoading from "expo-app-loading";
+import { Image} from "react-native";
+
 import styles from "./HomeStyles";
 import axios from "axios";
-import {RenderItem, RenderImage} from '../../types'
+import HomeScrollView from "./HomeScrollView";
+import { getSpecificItems } from "../../utils";
+
 import { Text, View } from "../../components/Themed";
 import { RootTabScreenProps } from "../../types";
 import { ScrollView } from "react-native-gesture-handler";
 
-
-
 export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
-  const renderItem = ({ item }: RenderItem): React.ReactElement => {
-    const url: any =
-      images.length > 0 &&
-      images.find((cur: RenderImage): boolean => cur.id === item.image_id);
-
-    const { amount }: any =
-      item.item_data.variations[0].item_variation_data.price_money;
-    return (
-      <View style={styles.item} key={item.id}>
-        <TouchableOpacity
-          onPress={():void => {
-           
-            navigation.navigate('ItemScreen', {itemInformation: {item}, image: url.image_data.url})
-          }}
-        >
-          <Image
-            source={{ uri: url.image_data.url }}
-            style={styles.itemPhoto}
-          />
-        </TouchableOpacity>
-        <Text numberOfLines={1} style={styles.text}>
-          {item.item_data.name}
-        </Text>
-        <Text style={styles.price}>
-          ${amount.toString().slice(0, -2)}.{amount.toString().slice(-2)}
-        </Text>
-      </View>
-    );
-  };
+  
 
   const [images, setImages] = useState([]);
   const [items, setItems] = useState([]);
+
+  const [craftItems, setCraftItems] = useState([]);
+  const [beerItems, setBeerItems] = useState([]);
+  const [wineItems, setWineItems] = useState([]);
+  const [spiritsItems, setSpiritsItems] = useState([]);
 
   useEffect(() => {
     getImages();
     getItems();
   }, []);
+
+  const categories = {
+    craft: "Square:063b6cc4-e1b9-4d9e-a781-ba64ad6defd4",
+    beer: "Square:439e3f38-458b-400c-8e6f-4a8486a8a4a7",
+    wine: "Square:7d0f15ee-09bb-4840-ba45-15e3d42e25ff",
+    spirits: "Square:ab35542b-7511-418c-8b12-ec132ca8ea47",
+  };
+
+  useEffect(() => {
+    getSpecificItems(items, setCraftItems, categories.craft);
+    getSpecificItems(items, setBeerItems, categories.beer);
+    getSpecificItems(items, setWineItems, categories.wine);
+    getSpecificItems(items, setSpiritsItems, categories.spirits);
+  }, [items]);
 
   const config = {
     headers: {
@@ -70,6 +61,7 @@ export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
 
     setImages(data.objects);
   };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.homeTop}>
@@ -79,75 +71,31 @@ export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
         />
         <Text style={[styles.homeTopText]}></Text>
       </View>
-      <View style={styles.new}>
-        <View style={styles.newTop}>
-          <Text style={styles.title}>Whats New</Text>
-          <Text style={styles.title}>See All</Text>
-        </View>
 
-        {images.length <= 1 || items.length <= 1 ? (
-          <AppLoading />
-        ) : (
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            horizontal
-          />
-        )}
-      </View>
-      <View style={styles.new}>
-        <View style={styles.newTop}>
-          <Text style={styles.title}>Beer</Text>
-          <Text style={styles.title}>See All</Text>
-        </View>
-
-        {images.length <= 1 || items.length <= 1 ? (
-          <AppLoading />
-        ) : (
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            horizontal
-          />
-        )}
-      </View>
-      <View style={styles.new}>
-        <View style={styles.newTop}>
-          <Text style={styles.title}>Wine</Text>
-          <Text style={styles.title}>See All</Text>
-        </View>
-
-        {images.length <= 1 || items.length <= 1 ? (
-          <AppLoading />
-        ) : (
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            horizontal
-          />
-        )}
-      </View>
-
-      <View style={styles.new}>
-        <View style={styles.newTop}>
-          <Text style={styles.title}>Spirts</Text>
-          <Text style={styles.title}>See All</Text>
-        </View>
-
-        {images.length <= 1 || items.length <= 1 ? (
-          <AppLoading />
-        ) : (
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            horizontal
-          />
-        )}
-      </View>
+      <HomeScrollView
+        title="New"
+        items={craftItems}
+        navigation={navigation}
+        images={images}
+      />
+      <HomeScrollView
+        title="Beer"
+        items={beerItems}
+        navigation={navigation}
+        images={images}
+      />
+      <HomeScrollView
+        title="Wine"
+        items={wineItems}
+        navigation={navigation}
+        images={images}
+      />
+      <HomeScrollView
+        title="Spirits"
+        items={spiritsItems}
+        navigation={navigation}
+        images={images}
+      />
     </ScrollView>
   );
 }

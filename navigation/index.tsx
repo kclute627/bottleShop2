@@ -91,7 +91,7 @@ const MainStack = () => {
       <MainStackNav.Screen
         name="ItemScreen"
         component={Itemscreen}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
     </MainStackNav.Navigator>
   );
